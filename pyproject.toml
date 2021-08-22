@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "env"
+version = "v0.0.1"
+description = "A Dash App"
+authors = ["Essi Alizadeh <hello@ealizadeh.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/e-alizadeh/dash-app"
+repository = "https://github.com/e-alizadeh/dash-app"
+
+
+[[tool.poetry.source]]
+name = 'default'
+url = 'https://pypi.python.org/simple'
+secondary = true
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.68.0"
+uvicorn = "^0.15.0"
+pandas = "^1.3.2"
+dash = "^1.21.0"
+dash-html-components = "^1.1.4"
+dash-core-components = "^1.17.1"
+dash-bootstrap-components = "^0.13.0"
+ipython = "^7.26.0"
+ipdb = "^0.13.9"
+
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
