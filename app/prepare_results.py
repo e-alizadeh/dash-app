@@ -47,7 +47,7 @@ def save_umap_results(data, out_filepath: Path):
     for model in UMAP_MODELS:
         umap = UMAP(init="random", random_state=SEED)
         projections = umap.fit_transform(data)
-        results[model.get_properties_str()] = {"proj": projections, "model": model}
+        results[model.get_properties_str()] = {"proj": projections, "model": model.to_dict()}
     with open(out_filepath, "wb") as f:
         pickle.dump(results, f)
 
@@ -57,7 +57,7 @@ def save_tsne_results(data, out_filepath: Path):
     for model in TSNE_MODELS:
         tsne = TSNE(n_components=2, random_state=SEED)
         projections = tsne.fit_transform(data)
-        results[model.get_properties_str()] = {"proj": projections, "model": model}
+        results[model.get_properties_str()] = {"proj": projections, "model": model.to_dict()}
     with open(out_filepath, "wb") as f:
         pickle.dump(results, f)
 
