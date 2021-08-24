@@ -29,6 +29,7 @@ pre-commit = "^2.14.0"
 plotly = "^5.2.1"
 scikit-learn = "^0.24.2"
 umap-learn = "*"
+dataclasses-json = "^0.5.4"
 
 
 [build-system]
