@@ -7,7 +7,8 @@ from starlette.middleware.wsgi import WSGIMiddleware
 if __name__ == "__main__":
     # app = dash.Dash(__name__, requests_pathname_prefix="/dash/")
 
-    app = dash.Dash()
+    app = dash.Dash("ABC")
+    server = app.server
     app.layout = app_layout(app)
     generate_callbacks(app)
     app.run_server(debug=True, use_reloader=False)
