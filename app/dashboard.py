@@ -76,7 +76,7 @@ def app_layout(app) -> html.Div:
                         className="two columns",
                     ),
                     html.H3(
-                        "t-SNE Explorer",
+                        "Interactive Dashboard for t-SNE and UMAP",
                         style={"float": "right"},
                         className="nine columns",
                     ),

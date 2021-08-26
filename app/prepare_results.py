@@ -39,7 +39,7 @@ class UMAPobj:
 
 TSNE_MODELS = [TSNEobj(perplexity=30.0, num_iteration=100, learning_rate=200.0)]
 
-UMAP_MODELS = [UMAPobj(n_neighbors=5)]
+UMAP_MODELS = [UMAPobj(n_neighbors=5, min_dist=0.1)]
 
 
 def save_umap_results(data, out_filepath: Path):
