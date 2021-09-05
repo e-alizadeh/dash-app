@@ -1,6 +1,7 @@
 import pickle
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Dict
 
 import plotly.express as px
 from dataclasses_json import dataclass_json
@@ -40,6 +41,25 @@ class UMAPobj:
 TSNE_MODELS = [TSNEobj(perplexity=30.0, num_iteration=100, learning_rate=200.0)]
 
 UMAP_MODELS = [UMAPobj(n_neighbors=5, min_dist=0.1)]
+
+
+def convert_param_str_to_dict(s: str) -> Dict[str, float]:
+    """ Convert parameters string to a dictionary
+    Example:
+        s = 'n_comp=2__perp=30.0__n_iter=100__learning_rate=200.0'
+
+        Step 1: Split parameters by "__"
+            >> ['n_comp=2', 'perp=30.0', 'n_iter=100', 'learning_rate=200.0']
+        Step 2: Split by "="
+            >> [ ['n_comp', '2'], ['perp', '30.0'], ['n_iter', '100'], ['learning_rate', '200.0'] ]
+        Step 3: Convert to dictionary
+            >> {'n_comp': 2.0, 'perp': 30.0, 'n_iter': 100.0, 'learning_rate': 200.0}
+    :param s:
+    :return:
+    """
+    s_ = s.split('__')
+    s_ = [s.split("=") for s in s_]
+    return {s[0]: float(s[1]) for s in s_}
 
 
 def save_umap_results(data, out_filepath: Path):
