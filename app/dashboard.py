@@ -47,6 +47,7 @@ def wrapper_slider(
                         marks=available_values,
                         value=default_value,
                         id=html_id,
+                        step=None,
                     )
                 ],
             ),
@@ -72,7 +73,7 @@ def app_layout(app) -> html.Div:
                 style={"background-color": "#f9f9f9"},
                 children=[
                     html.Img(
-                        src=app.get_asset_url("favicon.ico"),
+                        src=app.get_asset_url("./dash-logo.png"),
                         className="two columns",
                     ),
                     html.H3(
@@ -127,6 +128,28 @@ def app_layout(app) -> html.Div:
                         ],
                         style={"display": "inline-block"},
                         className="three columns",
+                        id="tsne-sliders",
+                    ),
+                    html.Div(
+                        [
+                            wrapper_slider(
+                                title="Number of Neighbors",
+                                default_value=2,
+                                available_values=generate_marks_for_sliders([2, 3, 5]),
+                                html_id="slider-num-neighbors",
+                            ),
+                            wrapper_slider(
+                                title="Minimum Distance",
+                                default_value=0.1,
+                                available_values=generate_marks_for_sliders(
+                                    [0.1, 3, 5]
+                                ),
+                                html_id="slider-min-distance",
+                            ),
+                        ],
+                        style={"display": "inline-block"},
+                        className="three columns",
+                        id="umap-sliders",
                     ),
                     html.Div(
                         [
@@ -147,9 +170,28 @@ def app_layout(app) -> html.Div:
 
 def generate_callbacks(app):
     @app.callback(
-        Output("scatter-plot", "figure"), [Input("selected-method-radio-item", "value")]
+        [
+            Output("scatter-plot", "figure"),
+            Output("tsne-sliders", "style"),
+            Output("umap-sliders", "style"),
+        ],
+        [
+            Input("selected-method-radio-item", "value"),
+            Input("slider-perplexity", "value"),
+            Input("slider-learning-rate", "value"),
+            Input("slider-num-iterations", "value"),
+            Input("slider-num-neighbors", "value"),
+            Input("slider-min-distance", "value"),
+        ],
     )
-    def add_graph(selected_method):
+    def add_graph(
+        selected_method,
+        tsne_perplexity,
+        tsne_learning_rate,
+        tsne_num_iterations,
+        umap_num_neighbors,
+        umap_min_distance,
+    ):
         df = px.data.iris()
         features = df.loc[:, :"petal_width"]
 
@@ -157,16 +199,22 @@ def generate_callbacks(app):
             proj_results = UMAP_PROJECTION_RESULTS["n_comp=2__n_neigh=5__min_dist=0.1"][
                 "proj"
             ]
+            tsne_style = {"display": "none"}
+            umap_style = {"display": "inline-block"}
         elif selected_method == DimReductionMethods.TSNE.value:
             proj_results = TSNE_PROJECTION_RESULTS[
                 "n_comp=2__perp=30.0__n_iter=100__learning_rate=200.0"
             ]["proj"]
+            tsne_style = {"display": "inline-block"}
+            umap_style = {"display": "none"}
         else:
             proj_results = UMAP_PROJECTION_RESULTS["n_comp=2__n_neigh=5__min_dist=0.1"][
                 "proj"
             ]
+            tsne_style = {"display": "none"}
+            umap_style = {"display": "inline-block"}
 
         fig = px.scatter(
             proj_results, x=0, y=1, color=df.species, labels={"color": "species"}
         )
-        return fig
+        return fig, tsne_style, umap_style
