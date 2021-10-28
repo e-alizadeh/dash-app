@@ -73,7 +73,7 @@ def app_layout(app) -> html.Div:
                 style={"background-color": "#f9f9f9"},
                 children=[
                     html.Img(
-                        src=app.get_asset_url("./dash-logo.png"),
+                        src=app.get_asset_url("dash-logo.png"),
                         className="two columns",
                     ),
                     html.H3(
