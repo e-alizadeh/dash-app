@@ -3,6 +3,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Union
 
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
@@ -69,102 +70,136 @@ def generate_marks_for_sliders(
 def app_layout(app) -> html.Div:
     return html.Div(
         [
-            html.Div(
-                style={"background-color": "#f9f9f9"},
-                children=[
-                    html.Img(
-                        src=app.get_asset_url("dash-logo.png"),
-                        className="two columns",
+            dbc.Row(
+                dbc.Col(
+                    # Header
+                    html.Div(
+                        style={"background-color": "blue"},  # "#f9f9f9"
+                        children=[
+                            html.Img(
+                                src=app.get_asset_url("dash-logo.png"),
+                                className="two columns",
+                                style={"margin-left": "5%"},
+                            ),
+                            html.H3(
+                                "Interactive Dashboard for t-SNE and UMAP",
+                                style={"float": "right"},
+                                className="nine columns",
+                            ),
+                        ],
                     ),
-                    html.H3(
-                        "Interactive Dashboard for t-SNE and UMAP",
-                        style={"float": "right"},
-                        className="nine columns",
-                    ),
-                ],
+                    width=8,
+                )
             ),
-            html.Div(
+            dbc.Row(
                 [
-                    html.Div(
-                        [
-                            dcc.RadioItems(
-                                id="selected-method-radio-item",
-                                options=[
-                                    {
-                                        "label": DimReductionMethods.UMAP.value,
-                                        "value": DimReductionMethods.UMAP.value,
-                                    },
-                                    {
-                                        "label": DimReductionMethods.TSNE.value,
-                                        "value": DimReductionMethods.TSNE.value,
-                                    },
-                                ],
-                                value=DimReductionMethods.TSNE.value,
-                            ),
-                        ],
-                        style={"margin-left": "5px"},
-                        className="twelve columns",
-                    ),
-                    html.Div(
-                        [
-                            wrapper_slider(
-                                title="Perplexity",
-                                default_value=2,
-                                available_values=generate_marks_for_sliders([2, 3, 5]),
-                                html_id="slider-perplexity",
-                            ),
-                            wrapper_slider(
-                                title="Learning Rate",
-                                default_value=2,
-                                available_values=generate_marks_for_sliders([2, 3, 5]),
-                                html_id="slider-learning-rate",
-                            ),
-                            wrapper_slider(
-                                title="Number of Iterations",
-                                default_value=2,
-                                available_values=generate_marks_for_sliders([2, 3, 5]),
-                                html_id="slider-num-iterations",
-                            ),
-                        ],
-                        style={"display": "inline-block"},
-                        className="three columns",
-                        id="tsne-sliders",
-                    ),
-                    html.Div(
-                        [
-                            wrapper_slider(
-                                title="Number of Neighbors",
-                                default_value=2,
-                                available_values=generate_marks_for_sliders([2, 3, 5]),
-                                html_id="slider-num-neighbors",
-                            ),
-                            wrapper_slider(
-                                title="Minimum Distance",
-                                default_value=0.1,
-                                available_values=generate_marks_for_sliders(
-                                    [0.1, 3, 5]
+                    dbc.Col(
+                        # html.Div(
+                        #     [
+                        html.Div(
+                            [
+                                # UMAP/t-SNE Selection
+                                html.Div(
+                                    [
+                                        dcc.RadioItems(
+                                            id="selected-method-radio-item",
+                                            options=[
+                                                {
+                                                    "label": DimReductionMethods.UMAP.value,
+                                                    "value": DimReductionMethods.UMAP.value,
+                                                },
+                                                {
+                                                    "label": DimReductionMethods.TSNE.value,
+                                                    "value": DimReductionMethods.TSNE.value,
+                                                },
+                                            ],
+                                            value=DimReductionMethods.TSNE.value,
+                                        ),
+                                    ],
+                                    # style={"margin-left": "5"},
+                                    # className="twelve columns",
                                 ),
-                                html_id="slider-min-distance",
-                            ),
-                        ],
-                        style={"display": "inline-block"},
-                        className="three columns",
-                        id="umap-sliders",
+                                # Dimensionality Reduction Configuration
+                                html.Div(
+                                    [
+                                        wrapper_slider(
+                                            title="Perplexity",
+                                            default_value=2,
+                                            available_values=generate_marks_for_sliders(
+                                                [2, 3, 5]
+                                            ),
+                                            html_id="slider-perplexity",
+                                        ),
+                                        wrapper_slider(
+                                            title="Learning Rate",
+                                            default_value=2,
+                                            available_values=generate_marks_for_sliders(
+                                                [2, 3, 5]
+                                            ),
+                                            html_id="slider-learning-rate",
+                                        ),
+                                        wrapper_slider(
+                                            title="Number of Iterations",
+                                            default_value=2,
+                                            available_values=generate_marks_for_sliders(
+                                                [2, 3, 5]
+                                            ),
+                                            html_id="slider-num-iterations",
+                                        ),
+                                    ],
+                                    style={"display": "inline-block"},
+                                    # className="three columns",
+                                    id="tsne-sliders",
+                                ),
+                                html.Div(
+                                    [
+                                        wrapper_slider(
+                                            title="Number of Neighbors",
+                                            default_value=2,
+                                            available_values=generate_marks_for_sliders(
+                                                [2, 3, 5]
+                                            ),
+                                            html_id="slider-num-neighbors",
+                                        ),
+                                        wrapper_slider(
+                                            title="Minimum Distance",
+                                            default_value=0.1,
+                                            available_values=generate_marks_for_sliders(
+                                                [0.1, 3, 5]
+                                            ),
+                                            html_id="slider-min-distance",
+                                        ),
+                                    ],
+                                    style={"display": "inline-block"},
+                                    # className="three columns",
+                                    id="umap-sliders",
+                                ),
+                            ],
+                            # className="two columns",
+                            # style={"display": "inline-block"},
+                        ),
+                        width=2,
                     ),
-                    html.Div(
-                        [
-                            dcc.Loading(
-                                id="loading-1",
-                                type="default",
-                                children=html.Div(dcc.Graph(id="scatter-plot")),
-                            ),
-                        ],
-                        style={"display": "inline-block"},
-                        className="nine columns",
+                    dbc.Col(
+                        html.Div(
+                            [
+                                dcc.Loading(
+                                    id="loading-1",
+                                    type="default",
+                                    children=html.Div(dcc.Graph(id="scatter-plot")),
+                                ),
+                            ],
+                            # style={"width": "50%"},
+                            # className="eight columns",
+                        ),
+                        width=8,
+                        align="start",
                     ),
+                    # html.Div([], className="two columns", style={"display": "inline-block"}),
                 ]
             ),
-        ]
+        ],
+        style={"margin-left": "5%", "margin-right": "5%"},
     )
 
 
