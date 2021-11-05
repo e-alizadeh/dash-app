@@ -120,8 +120,10 @@ def app_layout(app) -> html.Div:
                                     # className="twelve columns",
                                 ),
                                 # Dimensionality Reduction Configuration
+                                # t-SNE config
                                 html.Div(
                                     [
+                                        html.H4("t-SNE Configuration"),
                                         wrapper_slider(
                                             title="Perplexity",
                                             default_value=2,
@@ -151,8 +153,10 @@ def app_layout(app) -> html.Div:
                                     # className="three columns",
                                     id="tsne-sliders",
                                 ),
+                                # UMAP config
                                 html.Div(
                                     [
+                                        html.H4("UMAP Configuration"),
                                         wrapper_slider(
                                             title="Number of Neighbors",
                                             default_value=2,
