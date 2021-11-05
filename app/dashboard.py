@@ -232,7 +232,7 @@ def generate_callbacks(app):
         umap_min_distance,
     ):
         df = px.data.iris()
-        features = df.loc[:, :"petal_width"]
+        # features = df.loc[:, :"petal_width"]
 
         if selected_method == DimReductionMethods.UMAP.value:
             proj_results = UMAP_PROJECTION_RESULTS["n_comp=2__n_neigh=5__min_dist=0.1"][
