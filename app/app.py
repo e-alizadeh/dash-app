@@ -1,4 +1,5 @@
 import dash
+import dash_bootstrap_components as dbc
 
 # import uvicorn as uvicorn
 from dashboard import app_layout, generate_callbacks
@@ -6,13 +7,11 @@ from dashboard import app_layout, generate_callbacks
 # from fastapi import FastAPI
 # from starlette.middleware.wsgi import WSGIMiddleware
 
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-
 
 if __name__ == "__main__":
     # app = dash.Dash(__name__, requests_pathname_prefix="/dash/")
 
-    app = dash.Dash("ABC", external_stylesheets=external_stylesheets)
+    app = dash.Dash("ABC", external_stylesheets=[dbc.themes.BOOTSTRAP])
     server = app.server
     app.layout = app_layout(app)
     generate_callbacks(app)
