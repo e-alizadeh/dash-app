@@ -30,16 +30,12 @@ with open(TSNE_RESULTS_FILEPATH, "rb") as f:
 
 
 def wrapper_slider(
-    title: str,
     available_values: Dict[Union[int, float], str],
     default_value: Union[int, float],
     html_id: str,
-) -> html.Div:
+) -> dcc.Slider:
     min_value, max_value = min(available_values.keys()), max(available_values.keys())
     return dcc.Slider(
-        # html.H5(f"{title}"),
-        # html.Div(
-        #     children=[
         min=min_value,
         max=max_value,
         marks=available_values,
@@ -47,15 +43,6 @@ def wrapper_slider(
         id=html_id,
         step=None,
     )
-    #     ],
-    # )
-    # ],
-    # style={
-    #     "margin-left": "5px",
-    #     "margin-top": "25px",
-    #     # "margin-right": "30px"
-    # },
-    # )
 
 
 def generate_marks_for_sliders(
@@ -88,92 +75,85 @@ def app_layout(app) -> dbc.Container:
                 ]
             ),
             # Dimensionality Reduction Configuration
-            # html.Div(
-            #     [
+            # ------
             # t-SNE config
             html.Div(
                 [
                     dbc.Label("t-SNE Configuration"),
                     dbc.Label("Perplexity"),
                     wrapper_slider(
-                        title="Perplexity",
                         default_value=2,
                         available_values=generate_marks_for_sliders([2, 3, 5]),
                         html_id="slider-perplexity",
                     ),
+                    dbc.Label("Learning Rate"),
                     wrapper_slider(
-                        title="Learning Rate",
                         default_value=2,
                         available_values=generate_marks_for_sliders([2, 3, 5]),
                         html_id="slider-learning-rate",
                     ),
+                    dbc.Label("Number of Iterations"),
                     wrapper_slider(
-                        title="Number of Iterations",
                         default_value=2,
                         available_values=generate_marks_for_sliders([2, 3, 5]),
                         html_id="slider-num-iterations",
                     ),
                 ],
-                # style={"display": "inline-block"},
-                # className="three columns",
                 id="tsne-sliders",
             ),
             # UMAP config
             html.Div(
                 [
                     dbc.Label("UMAP Configuration"),
+                    dbc.Label("Number of Neighbors"),
                     wrapper_slider(
-                        title="Number of Neighbors",
                         default_value=2,
                         available_values=generate_marks_for_sliders([2, 3, 5]),
                         html_id="slider-num-neighbors",
                     ),
+                    dbc.Label("Minimum Distance"),
                     wrapper_slider(
-                        title="Minimum Distance",
                         default_value=0.1,
                         available_values=generate_marks_for_sliders([0.1, 3, 5]),
                         html_id="slider-min-distance",
                     ),
                 ],
-                # style={"display": "inline-block"},
-                # className="three columns",
                 id="umap-sliders",
             ),
         ],
         style={"background-color": "LightGreen"},
     )
-    # ],
-    #     body=True
-    # )
     return dbc.Container(
         [
-            # dbc.Row(dbc.Col(
-            # html.Div(
-            #     style={"background-color": "blue"},  # "#f9f9f9"
-            #     children=[
-            #         html.Img(
-            #             src=app.get_asset_url("dash-logo.png"),
-            #             className="two columns",
-            #             style={"margin-left": "5%"},
-            #         ),
-            #         html.H3(
-            #             "Interactive Dashboard for t-SNE and UMAP",
-            #             style={"float": "right"},
-            #             className="nine columns",
-            #         ),
-            #     ],
-            # ))),
-            html.H1("Temp"),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        children=[
+                            html.Img(
+                                src=app.get_asset_url("dash-logo.png"),
+                                className="two columns",
+                                style={"margin-left": "5%"},
+                            ),
+                            html.H3(
+                                "Interactive Dashboard for t-SNE and UMAP",
+                                style={"float": "right"},
+                                className="nine columns",
+                            ),
+                        ],
+                        style={"background-color": "blue"},  # "#f9f9f9"
+                    )
+                )
+            ),
             html.Hr(),
             dbc.Row(
                 [
-                    dbc.Col(controls, md=4),
+                    dbc.Col(controls, md=3),
                     dbc.Col(dcc.Graph(id="scatter-plot"), md=8),
                 ],
                 align="center",
             ),
         ],
-        # style={"margin-left": "5%", "margin-right": "5%"},
+        style={"margin-left": "5%", "margin-right": "5%"},
         fluid=True,
     )
 
