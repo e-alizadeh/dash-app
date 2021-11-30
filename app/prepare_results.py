@@ -9,6 +9,13 @@ from itertools import product
 from sklearn.manifold import TSNE
 from umap import UMAP
 
+TSNE_PARAMS = {
+    "perplexity": [10.0, 30.0],
+    "n_iterations": [5, 20, 50],
+    "learning_rates": [1.0, 20.0],
+}
+UMAP_PARAMS = {"n_neighbors": [2, 3, 5], "min_dist": [0.1, 0.2]}
+
 DATA_DIR = Path(".")
 TSNE_RESULTS_FILEPATH = DATA_DIR.joinpath("tsne_projection_results.pkl")
 UMAP_RESULTS_FILEPATH = DATA_DIR.joinpath("umap_projection_results.pkl")
@@ -39,16 +46,21 @@ class UMAPobj:
         return f"n_comp={self.n_components}__n_neigh={self.n_neighbors}__min_dist={self.min_dist}"
 
 
-perplexity, n_iterations, learning_rates = [10.0, 30.0], [5, 20, 50], [1.0, 20.0]
+tsne_model_params = list(
+    product(
+        TSNE_PARAMS["perplexity"],
+        TSNE_PARAMS["n_iterations"],
+        TSNE_PARAMS["learning_rates"],
+    )
+)
 TSNE_MODELS = [
     TSNEobj(perplexity=perp, num_iteration=n_iter, learning_rate=eta)
-    for perp, n_iter, eta in list(product(perplexity, n_iterations, learning_rates))
+    for perp, n_iter, eta in tsne_model_params
 ]
 
-n_neighbors, min_dist = [2, 3, 5], [0.1, 0.2]
+umap_model_params = list(product(UMAP_PARAMS["n_neighbors"], UMAP_PARAMS["min_dist"]))
 UMAP_MODELS = [
-    UMAPobj(n_neighbors=n_neigh, min_dist=dist)
-    for n_neigh, dist in list(product(n_neighbors, min_dist))
+    UMAPobj(n_neighbors=n_neigh, min_dist=dist) for n_neigh, dist in umap_model_params
 ]
 
 
