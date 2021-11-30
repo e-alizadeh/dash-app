@@ -9,6 +9,7 @@ from dash.dependencies import Input, Output
 from enum import Enum
 
 # from app.prepare_results import UMAP_RESULTS_FILEPATH, TSNE_RESULTS_FILEPATH
+from prepare_results import TSNE_PARAMS, UMAP_PARAMS
 
 DATA_DIR = Path(".")
 TSNE_RESULTS_FILEPATH = DATA_DIR.joinpath("tsne_projection_results.pkl")
@@ -82,20 +83,26 @@ def app_layout(app) -> dbc.Container:
                     dbc.Label("t-SNE Configuration"),
                     dbc.Label("Perplexity"),
                     wrapper_slider(
-                        default_value=2,
-                        available_values=generate_marks_for_sliders([2, 3, 5]),
+                        default_value=min(TSNE_PARAMS["perplexity"]),
+                        available_values=generate_marks_for_sliders(
+                            TSNE_PARAMS["perplexity"]
+                        ),
                         html_id="slider-perplexity",
                     ),
                     dbc.Label("Learning Rate"),
                     wrapper_slider(
-                        default_value=2,
-                        available_values=generate_marks_for_sliders([2, 3, 5]),
+                        default_value=min(TSNE_PARAMS["learning_rates"]),
+                        available_values=generate_marks_for_sliders(
+                            TSNE_PARAMS["learning_rates"]
+                        ),
                         html_id="slider-learning-rate",
                     ),
                     dbc.Label("Number of Iterations"),
                     wrapper_slider(
-                        default_value=2,
-                        available_values=generate_marks_for_sliders([2, 3, 5]),
+                        default_value=min(TSNE_PARAMS["n_iterations"]),
+                        available_values=generate_marks_for_sliders(
+                            TSNE_PARAMS["n_iterations"]
+                        ),
                         html_id="slider-num-iterations",
                     ),
                 ],
@@ -107,14 +114,18 @@ def app_layout(app) -> dbc.Container:
                     dbc.Label("UMAP Configuration"),
                     dbc.Label("Number of Neighbors"),
                     wrapper_slider(
-                        default_value=2,
-                        available_values=generate_marks_for_sliders([2, 3, 5]),
+                        default_value=min(UMAP_PARAMS["n_neighbors"]),
+                        available_values=generate_marks_for_sliders(
+                            UMAP_PARAMS["n_neighbors"]
+                        ),
                         html_id="slider-num-neighbors",
                     ),
                     dbc.Label("Minimum Distance"),
                     wrapper_slider(
-                        default_value=0.1,
-                        available_values=generate_marks_for_sliders([0.1, 3, 5]),
+                        default_value=min(UMAP_PARAMS["min_dist"]),
+                        available_values=generate_marks_for_sliders(
+                            UMAP_PARAMS["min_dist"]
+                        ),
                         html_id="slider-min-distance",
                     ),
                 ],
@@ -188,20 +199,16 @@ def generate_callbacks(app):
         # features = df.loc[:, :"petal_width"]
 
         if selected_method == DimReductionMethods.UMAP.value:
-            proj_results = UMAP_PROJECTION_RESULTS["n_comp=2__n_neigh=5__min_dist=0.1"][
-                "proj"
-            ]
+            proj_results = UMAP_PROJECTION_RESULTS[
+                f"n_comp=2__n_neigh={umap_num_neighbors}__min_dist={umap_min_distance:.1f}"
+            ]["proj"]
             tsne_style, umap_style = True, False
-        elif selected_method == DimReductionMethods.TSNE.value:
+        else:
+            # By default, it's t-SNE
             proj_results = TSNE_PROJECTION_RESULTS[
-                "n_comp=2__perp=30.0__n_iter=100__learning_rate=200.0"
+                f"n_comp=2__perp={tsne_perplexity:.1f}__n_iter={tsne_num_iterations}__learning_rate={tsne_learning_rate:.1f}"
             ]["proj"]
             tsne_style, umap_style = False, True
-        else:
-            proj_results = UMAP_PROJECTION_RESULTS["n_comp=2__n_neigh=5__min_dist=0.1"][
-                "proj"
-            ]
-            tsne_style, umap_style = True, False
 
         fig = px.scatter(
             proj_results, x=0, y=1, color=df.species, labels={"color": "species"}
