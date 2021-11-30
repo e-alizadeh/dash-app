@@ -123,27 +123,28 @@ def app_layout(app) -> dbc.Container:
         ],
         style={"background-color": "LightGreen"},
     )
+    header = dbc.Row(
+        dbc.Col(
+            html.Div(
+                children=[
+                    html.Img(
+                        src=app.get_asset_url("dash-logo.png"),
+                        className="two columns",
+                        style={"margin-left": "5%"},
+                    ),
+                    html.H3(
+                        "Interactive Dashboard for t-SNE and UMAP",
+                        style={"float": "right"},
+                        className="nine columns",
+                    ),
+                ],
+                style={"background-color": "blue"},  # "#f9f9f9"
+            )
+        )
+    )
     return dbc.Container(
         [
-            dbc.Row(
-                dbc.Col(
-                    html.Div(
-                        children=[
-                            html.Img(
-                                src=app.get_asset_url("dash-logo.png"),
-                                className="two columns",
-                                style={"margin-left": "5%"},
-                            ),
-                            html.H3(
-                                "Interactive Dashboard for t-SNE and UMAP",
-                                style={"float": "right"},
-                                className="nine columns",
-                            ),
-                        ],
-                        style={"background-color": "blue"},  # "#f9f9f9"
-                    )
-                )
-            ),
+            header,
             html.Hr(),
             dbc.Row(
                 [
