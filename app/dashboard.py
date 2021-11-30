@@ -162,13 +162,11 @@ def app_layout(app) -> dbc.Container:
 
 def generate_callbacks(app):
     @app.callback(
-        # [
-        Output("scatter-plot", "figure"),
-        # Output("tsne-sliders", "style"),
-        # Output("umap-sliders", "style"),
-        Output("tsne-sliders", component_property="hidden"),
-        Output("umap-sliders", component_property="hidden"),
-        # ],
+        [
+            Output("scatter-plot", "figure"),
+            Output("tsne-sliders", component_property="hidden"),
+            Output("umap-sliders", component_property="hidden"),
+        ],
         [
             Input("selected-method-radio-item", "value"),
             Input("slider-perplexity", "value"),
