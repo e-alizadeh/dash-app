@@ -1,10 +1,11 @@
-import pickle
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict
 
+import pickle
 import plotly.express as px
+from dataclasses import dataclass
 from dataclasses_json import dataclass_json
+from itertools import product
 from sklearn.manifold import TSNE
 from umap import UMAP
 
@@ -38,13 +39,21 @@ class UMAPobj:
         return f"n_comp={self.n_components}__n_neigh={self.n_neighbors}__min_dist={self.min_dist}"
 
 
-TSNE_MODELS = [TSNEobj(perplexity=30.0, num_iteration=100, learning_rate=200.0)]
+perplexity, n_iterations, learning_rates = [10.0, 30.0], [5, 20, 50], [1.0, 20.0]
+TSNE_MODELS = [
+    TSNEobj(perplexity=perp, num_iteration=n_iter, learning_rate=eta)
+    for perp, n_iter, eta in list(product(perplexity, n_iterations, learning_rates))
+]
 
-UMAP_MODELS = [UMAPobj(n_neighbors=5, min_dist=0.1)]
+n_neighbors, min_dist = [2, 3, 5], [0.1, 0.2]
+UMAP_MODELS = [
+    UMAPobj(n_neighbors=n_neigh, min_dist=dist)
+    for n_neigh, dist in list(product(n_neighbors, min_dist))
+]
 
 
 def convert_param_str_to_dict(s: str) -> Dict[str, float]:
-    """ Convert parameters string to a dictionary
+    """Convert parameters string to a dictionary
     Example:
         s = 'n_comp=2__perp=30.0__n_iter=100__learning_rate=200.0'
 
@@ -57,7 +66,7 @@ def convert_param_str_to_dict(s: str) -> Dict[str, float]:
     :param s:
     :return:
     """
-    s_ = s.split('__')
+    s_ = s.split("__")
     s_ = [s.split("=") for s in s_]
     return {s[0]: float(s[1]) for s in s_}
 
@@ -67,7 +76,10 @@ def save_umap_results(data, out_filepath: Path):
     for model in UMAP_MODELS:
         umap = UMAP(init="random", random_state=SEED)
         projections = umap.fit_transform(data)
-        results[model.get_properties_str()] = {"proj": projections, "model": model.to_dict()}
+        results[model.get_properties_str()] = {
+            "proj": projections,
+            "model": model.to_dict(),
+        }
     with open(out_filepath, "wb") as f:
         pickle.dump(results, f)
 
@@ -77,7 +89,10 @@ def save_tsne_results(data, out_filepath: Path):
     for model in TSNE_MODELS:
         tsne = TSNE(n_components=2, random_state=SEED)
         projections = tsne.fit_transform(data)
-        results[model.get_properties_str()] = {"proj": projections, "model": model.to_dict()}
+        results[model.get_properties_str()] = {
+            "proj": projections,
+            "model": model.to_dict(),
+        }
     with open(out_filepath, "wb") as f:
         pickle.dump(results, f)
 
