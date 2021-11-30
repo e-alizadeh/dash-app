@@ -24,6 +24,7 @@ dataclasses-json = "^0.5.4"
 dash = "^2.0.0"
 dash-bootstrap-components = "^1.0.0"
 scikit-learn = "^1.0.1"
+pre-commit = "^2.15.0"
 
 
 [build-system]
