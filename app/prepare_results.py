@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Dict
 
+import logging
 import pickle
 import plotly.express as px
 from dataclasses import dataclass
@@ -9,12 +10,15 @@ from itertools import product
 from sklearn.manifold import TSNE
 from umap import UMAP
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 TSNE_PARAMS = {
-    "perplexity": [10.0, 30.0],
-    "n_iterations": [5, 20, 50],
-    "learning_rates": [1.0, 20.0],
+    "perplexity": [10, 30, 50],
+    "n_iterations": [300, 500, 1000],
+    "learning_rates": [2, 10, 50],
 }
-UMAP_PARAMS = {"n_neighbors": [2, 3, 5], "min_dist": [0.1, 0.2]}
+UMAP_PARAMS = {"n_neighbors": [2, 3, 5, 10], "min_dist": [0.1, 0.2, 0.5]}
 
 DATA_DIR = Path(".")
 TSNE_RESULTS_FILEPATH = DATA_DIR.joinpath("tsne_projection_results.pkl")
@@ -86,7 +90,13 @@ def convert_param_str_to_dict(s: str) -> Dict[str, float]:
 def save_umap_results(data, out_filepath: Path):
     results = {}
     for model in UMAP_MODELS:
-        umap = UMAP(init="random", random_state=SEED)
+        logger.info(f"Working on UMAP model: {model}")
+        umap = UMAP(
+            n_components=model.n_components,
+            n_neighbors=model.n_neighbors,
+            min_dist=model.min_dist,
+            random_state=SEED,
+        )
         projections = umap.fit_transform(data)
         results[model.get_properties_str()] = {
             "proj": projections,
@@ -99,7 +109,15 @@ def save_umap_results(data, out_filepath: Path):
 def save_tsne_results(data, out_filepath: Path):
     results = {}
     for model in TSNE_MODELS:
-        tsne = TSNE(n_components=2, random_state=SEED)
+        logger.info(f"Working on t-SNE model: {model}")
+        tsne = TSNE(
+            n_components=model.n_components,
+            perplexity=model.perplexity,
+            learning_rate=model.learning_rate,
+            n_iter=model.num_iteration,
+            init="random",
+            random_state=SEED,
+        )
         projections = tsne.fit_transform(data)
         results[model.get_properties_str()] = {
             "proj": projections,
@@ -107,11 +125,6 @@ def save_tsne_results(data, out_filepath: Path):
         }
     with open(out_filepath, "wb") as f:
         pickle.dump(results, f)
-
-
-def generate_results(data) -> None:
-    save_tsne_results(data, TSNE_RESULTS_FILEPATH)
-    save_umap_results(data, UMAP_RESULTS_FILEPATH)
 
 
 if __name__ == "__main__":
