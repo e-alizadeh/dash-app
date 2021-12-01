@@ -53,10 +53,11 @@ def generate_marks_for_sliders(
 
 
 def app_layout(app) -> dbc.Container:
-    controls = dbc.Card(
+    print(generate_marks_for_sliders(TSNE_PARAMS["learning_rates"]))
+    controls = html.Div(
         [
             # UMAP/t-SNE Selection
-            html.Div(
+            dbc.Card(
                 [
                     dcc.RadioItems(
                         id="selected-method-radio-item",
@@ -71,64 +72,68 @@ def app_layout(app) -> dbc.Container:
                             },
                         ],
                         value=DimReductionMethods.TSNE.value,
-                        style={"background-color": "SkyBlue"},
                     ),
-                ]
+                ],
+                style={"margin-bottom": "10px"},
             ),
             # Dimensionality Reduction Configuration
             # ------
             # t-SNE config
             html.Div(
-                [
-                    dbc.Label("t-SNE Configuration"),
-                    dbc.Label("Perplexity"),
-                    wrapper_slider(
-                        default_value=min(TSNE_PARAMS["perplexity"]),
-                        available_values=generate_marks_for_sliders(
-                            TSNE_PARAMS["perplexity"]
+                dbc.Card(
+                    [
+                        dbc.Label("t-SNE Configuration", className="param_title"),
+                        dbc.Label("Perplexity", className="param_headers"),
+                        wrapper_slider(
+                            default_value=min(TSNE_PARAMS["perplexity"]),
+                            available_values=generate_marks_for_sliders(
+                                TSNE_PARAMS["perplexity"]
+                            ),
+                            html_id="slider-perplexity",
                         ),
-                        html_id="slider-perplexity",
-                    ),
-                    dbc.Label("Learning Rate"),
-                    wrapper_slider(
-                        default_value=min(TSNE_PARAMS["learning_rates"]),
-                        available_values=generate_marks_for_sliders(
-                            TSNE_PARAMS["learning_rates"]
+                        dbc.Label("Learning Rate", className="param_headers"),
+                        wrapper_slider(
+                            default_value=min(TSNE_PARAMS["learning_rates"]),
+                            available_values=generate_marks_for_sliders(
+                                TSNE_PARAMS["learning_rates"]
+                            ),
+                            html_id="slider-learning-rate",
                         ),
-                        html_id="slider-learning-rate",
-                    ),
-                    dbc.Label("Number of Iterations"),
-                    wrapper_slider(
-                        default_value=min(TSNE_PARAMS["n_iterations"]),
-                        available_values=generate_marks_for_sliders(
-                            TSNE_PARAMS["n_iterations"]
+                        dbc.Label("Number of Iterations", className="param_headers"),
+                        wrapper_slider(
+                            default_value=min(TSNE_PARAMS["n_iterations"]),
+                            available_values=generate_marks_for_sliders(
+                                TSNE_PARAMS["n_iterations"]
+                            ),
+                            html_id="slider-num-iterations",
                         ),
-                        html_id="slider-num-iterations",
-                    ),
-                ],
+                    ]
+                ),
                 id="tsne-sliders",
             ),
             # UMAP config
             html.Div(
-                [
-                    dbc.Label("UMAP Configuration"),
-                    dbc.Label("Number of Neighbors"),
-                    wrapper_slider(
-                        default_value=min(UMAP_PARAMS["n_neighbors"]),
-                        available_values=generate_marks_for_sliders(
-                            UMAP_PARAMS["n_neighbors"]
+                dbc.Card(
+                    [
+                        dbc.Label("UMAP Configuration", className="param_title"),
+                        dbc.Label("Number of Neighbors", className="param_headers"),
+                        wrapper_slider(
+                            default_value=min(UMAP_PARAMS["n_neighbors"]),
+                            available_values=generate_marks_for_sliders(
+                                UMAP_PARAMS["n_neighbors"]
+                            ),
+                            html_id="slider-num-neighbors",
                         ),
-                        html_id="slider-num-neighbors",
-                    ),
-                    dbc.Label("Minimum Distance"),
-                    wrapper_slider(
-                        default_value=min(UMAP_PARAMS["min_dist"]),
-                        available_values=generate_marks_for_sliders(
-                            UMAP_PARAMS["min_dist"]
+                        dbc.Label("Minimum Distance", className="param_headers"),
+                        wrapper_slider(
+                            default_value=min(UMAP_PARAMS["min_dist"]),
+                            available_values=generate_marks_for_sliders(
+                                UMAP_PARAMS["min_dist"]
+                            ),
+                            html_id="slider-min-distance",
                         ),
-                        html_id="slider-min-distance",
-                    ),
-                ],
+                    ]
+                ),
                 id="umap-sliders",
             ),
         ],
