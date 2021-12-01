@@ -1,12 +1,20 @@
-.param_title{
-    font-size: 24px;
-    font-style: bold;
-    margin-left: 8%;
+.card_title{
+    font-size: 22px;
+    font-weight: bold;
 }
+
 .param_headers{
     font-size: 18px;
-    font-style: bold;
-    margin-left: 6%;
+    margin-left: 2%;
+}
+
+.radio_item{
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.slider{
+    margin-left: -4%;
 }
 
 .control_box{

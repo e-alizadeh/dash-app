@@ -34,15 +34,20 @@ def wrapper_slider(
     available_values: Dict[Union[int, float], str],
     default_value: Union[int, float],
     html_id: str,
-) -> dcc.Slider:
+) -> html.Div:
     min_value, max_value = min(available_values.keys()), max(available_values.keys())
-    return dcc.Slider(
-        min=min_value,
-        max=max_value,
-        marks=available_values,
-        value=default_value,
-        id=html_id,
-        step=None,
+    return html.Div(
+        [
+            dcc.Slider(
+                min=min_value,
+                max=max_value,
+                marks=available_values,
+                value=default_value,
+                id=html_id,
+                step=None,
+            )
+        ],
+        className="slider",
     )
 
 
@@ -53,29 +58,30 @@ def generate_marks_for_sliders(
 
 
 def app_layout(app) -> dbc.Container:
-    print(generate_marks_for_sliders(TSNE_PARAMS["learning_rates"]))
     controls = html.Div(
         [
             # UMAP/t-SNE Selection
             dbc.Card(
                 [
+                    dbc.Label("Projection technique", className="card_title"),
                     dcc.RadioItems(
                         id="selected-method-radio-item",
                         options=[
                             {
-                                "label": DimReductionMethods.UMAP.value,
+                                "label": " " + DimReductionMethods.UMAP.value,
                                 "value": DimReductionMethods.UMAP.value,
                             },
                             {
-                                "label": DimReductionMethods.TSNE.value,
+                                "label": " " + DimReductionMethods.TSNE.value,
                                 "value": DimReductionMethods.TSNE.value,
                             },
                         ],
                         value=DimReductionMethods.TSNE.value,
+                        className="radio_item",
                     ),
                 ],
                 className="control_box",
-                style={"margin-bottom": "10px"},
+                style={"margin-bottom": "10px", "padding-left": "4%"},
             ),
             # Dimensionality Reduction Configuration
             # ------
@@ -83,7 +89,7 @@ def app_layout(app) -> dbc.Container:
             html.Div(
                 dbc.Card(
                     [
-                        dbc.Label("t-SNE Configuration", className="param_title"),
+                        dbc.Label("t-SNE Configuration", className="card_title"),
                         dbc.Label("Perplexity", className="param_headers"),
                         wrapper_slider(
                             default_value=min(TSNE_PARAMS["perplexity"]),
@@ -108,7 +114,8 @@ def app_layout(app) -> dbc.Container:
                             ),
                             html_id="slider-num-iterations",
                         ),
-                    ]
+                    ],
+                    style={"padding-left": "4%"},
                 ),
                 className="control_box",
                 id="tsne-sliders",
@@ -117,7 +124,7 @@ def app_layout(app) -> dbc.Container:
             html.Div(
                 dbc.Card(
                     [
-                        dbc.Label("UMAP Configuration", className="param_title"),
+                        dbc.Label("UMAP Configuration", className="card_title"),
                         dbc.Label("Number of Neighbors", className="param_headers"),
                         wrapper_slider(
                             default_value=min(UMAP_PARAMS["n_neighbors"]),
@@ -134,7 +141,8 @@ def app_layout(app) -> dbc.Container:
                             ),
                             html_id="slider-min-distance",
                         ),
-                    ]
+                    ],
+                    style={"padding-left": "4%"},
                 ),
                 className="control_box",
                 id="umap-sliders",
@@ -164,6 +172,11 @@ def app_layout(app) -> dbc.Container:
     return dbc.Container(
         [
             header,
+            dcc.Markdown(
+                """
+                This is a test **abc**
+            """
+            ),
             html.Hr(),
             dbc.Row(
                 [
