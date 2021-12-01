@@ -74,6 +74,7 @@ def app_layout(app) -> dbc.Container:
                         value=DimReductionMethods.TSNE.value,
                     ),
                 ],
+                className="control_box",
                 style={"margin-bottom": "10px"},
             ),
             # Dimensionality Reduction Configuration
@@ -109,6 +110,7 @@ def app_layout(app) -> dbc.Container:
                         ),
                     ]
                 ),
+                className="control_box",
                 id="tsne-sliders",
             ),
             # UMAP config
@@ -134,11 +136,10 @@ def app_layout(app) -> dbc.Container:
                         ),
                     ]
                 ),
+                className="control_box",
                 id="umap-sliders",
             ),
-        ],
-        style={"background-color": "LightGreen"},
-    )
+        ],    )
     header = dbc.Row(
         [
             dbc.Col(
@@ -166,7 +167,7 @@ def app_layout(app) -> dbc.Container:
             dbc.Row(
                 [
                     dbc.Col(controls, md=3),
-                    dbc.Col(dcc.Graph(id="scatter-plot"), md=8),
+                    dbc.Col(dbc.Card(dcc.Graph(id="scatter-plot"), className="plot_box"), md=8),
                 ],
                 align="center",
             ),
