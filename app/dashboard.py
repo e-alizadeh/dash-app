@@ -139,7 +139,8 @@ def app_layout(app) -> dbc.Container:
                 className="control_box",
                 id="umap-sliders",
             ),
-        ],    )
+        ],
+    )
     header = dbc.Row(
         [
             dbc.Col(
@@ -167,7 +168,10 @@ def app_layout(app) -> dbc.Container:
             dbc.Row(
                 [
                     dbc.Col(controls, md=3),
-                    dbc.Col(dbc.Card(dcc.Graph(id="scatter-plot"), className="plot_box"), md=8),
+                    dbc.Col(
+                        dbc.Card(dcc.Graph(id="scatter-plot"), className="plot_box"),
+                        md=8,
+                    ),
                 ],
                 align="center",
             ),
@@ -202,7 +206,6 @@ def generate_callbacks(app):
         umap_min_distance,
     ):
         df = px.data.iris()
-        # features = df.loc[:, :"petal_width"]
 
         if selected_method == DimReductionMethods.UMAP.value:
             proj_results = UMAP_PROJECTION_RESULTS[
@@ -212,7 +215,7 @@ def generate_callbacks(app):
         else:
             # By default, it's t-SNE
             proj_results = TSNE_PROJECTION_RESULTS[
-                f"n_comp=2__perp={tsne_perplexity:.1f}__n_iter={tsne_num_iterations}__learning_rate={tsne_learning_rate:.1f}"
+                f"n_comp=2__perp={tsne_perplexity}__n_iter={tsne_num_iterations}__learning_rate={tsne_learning_rate}"
             ]["proj"]
             tsne_style, umap_style = False, True
 
