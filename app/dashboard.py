@@ -152,9 +152,14 @@ def app_layout(app) -> dbc.Container:
     header = dbc.Row(
         [
             dbc.Col(
-                html.Img(
-                    src=app.get_asset_url("dash-logo.png"),
-                    style={"width": "30%"},
+                html.A(
+                    href="https://ealizadeh.com",
+                    children=[
+                        html.Img(
+                            src=app.get_asset_url("favicon.png"),
+                            style={"width": "30%"},
+                        )
+                    ],
                 ),
                 width=3,
                 align="left",
@@ -172,10 +177,21 @@ def app_layout(app) -> dbc.Container:
     return dbc.Container(
         [
             header,
-            dcc.Markdown(
-                """
-                This is a test **abc**
-            """
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        [
+                            dcc.Markdown(
+                                """
+                        This page contains an interactive web-app that shows the 
+                    """
+                            ),
+                            dbc.Button("Click", color="success", className="mt-auto"),
+                        ]
+                    ),
+                    className="control_box",
+                ),
+                width={"size": 6, "offset": 2},
             ),
             html.Hr(),
             dbc.Row(
