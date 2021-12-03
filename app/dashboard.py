@@ -179,15 +179,25 @@ def app_layout(app) -> dbc.Container:
                 dbc.Card(
                     dbc.CardBody(
                         [
-                            dcc.Markdown(
+                            html.P(
                                 """
-                        This page contains an interactive web-app that shows the 
-                    """
+                                    This page contains an interactive app using the ubiquitous Iris data.
+                                    The main goal here was to deploy a containerized Dash app.
+                                    The app uses two popular dimensionality reduction techniques, namely
+                                    t-SNE and UMAP to project higher dimensional data into a 2D plane. 
+                                    You can choose between different configurations for each technique. 
+                                    Custom CSS style in Dash
+                                """
                             ),
-                            dbc.Button("Click", color="success", className="mt-auto"),
+                            dbc.Badge(
+                                "Dash by Plotly", color="#dcdcdc", className="mt-auto"
+                            ),
+                            dbc.Badge("Plotly", color="primary", className="mt-auto"),
+                            dbc.Badge("Docker", color="#dcdcdc", className="mt-auto"),
+                            dbc.Badge("Docker", color="#dcdcdc", className="mt-auto"),
                         ]
                     ),
-                    className="control_box",
+                    className="text_box",
                 ),
                 width={"size": 6, "offset": 2},
             ),
