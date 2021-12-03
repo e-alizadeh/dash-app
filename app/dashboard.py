@@ -7,8 +7,6 @@ import plotly.express as px
 from dash import dcc, html
 from dash.dependencies import Input, Output
 from enum import Enum
-
-# from app.prepare_results import UMAP_RESULTS_FILEPATH, TSNE_RESULTS_FILEPATH
 from prepare_results import TSNE_PARAMS, UMAP_PARAMS
 
 DATA_DIR = Path(".")
@@ -167,7 +165,6 @@ def app_layout(app) -> dbc.Container:
             dbc.Col(
                 html.H1(
                     "Interactive Dashboard for t-SNE and UMAP",
-                    # style={"float": "right"},
                 ),
                 width=9,
                 align="center",
@@ -203,6 +200,13 @@ def app_layout(app) -> dbc.Container:
                     ),
                 ],
                 align="center",
+            ),
+            dbc.Row(
+                dbc.Col(
+                    dbc.Label("© 2021 Esmaeil Alizadeh", style={"font-weight": "bold"}),
+                    width={"size": 4, "offset": 4},
+                    style={"margin-top": "40px"},
+                )
             ),
         ],
         style={"margin-left": "5%", "margin-right": "5%", "margin-top": "50px"},
@@ -250,5 +254,8 @@ def generate_callbacks(app):
 
         fig = px.scatter(
             proj_results, x=0, y=1, color=df.species, labels={"color": "species"}
+        )
+        fig.update_traces(
+            marker=dict(size=18, line=dict(width=2, color="black")), opacity=0.5
         )
         return fig, tsne_style, umap_style
