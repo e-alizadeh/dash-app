@@ -1,7 +1,7 @@
 FROM python:3.8
 
-COPY requirements.txt /
-RUN pip install -r /requirements.txt
+COPY deploy-env.txt /
+RUN pip install -r /deploy-env.txt
 
 RUN mkdir /app
 COPY ./app/ /app/

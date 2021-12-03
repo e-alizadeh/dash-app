@@ -1,0 +1,8 @@
+name: dash_app
+
+channels:
+  - conda-forge
+  - default
+
+dependencies:
+  - python=3.8
