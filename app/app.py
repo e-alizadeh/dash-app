@@ -2,7 +2,8 @@ import dash
 import dash_bootstrap_components as dbc
 from dashboard import app_layout, generate_callbacks
 
-app = dash.Dash("ABC", external_stylesheets=[dbc.themes.ZEPHYR])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.ZEPHYR])
+app.title = "Simple Dash App"
 server = app.server
 
 
