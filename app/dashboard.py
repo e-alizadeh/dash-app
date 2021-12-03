@@ -7,6 +7,7 @@ import plotly.express as px
 from dash import dcc, html
 from dash.dependencies import Input, Output
 from enum import Enum
+from plotly.graph_objs import Figure  # Only used for type hint!
 from prepare_results import TSNE_PARAMS, UMAP_PARAMS
 
 DATA_DIR = Path(".")
@@ -204,7 +205,7 @@ def app_layout(app) -> dbc.Container:
             dbc.Row(
                 dbc.Col(
                     dbc.Label("© 2021 Esmaeil Alizadeh", style={"font-weight": "bold"}),
-                    width={"size": 4, "offset": 4},
+                    width={"size": 4, "offset": 5},
                     style={"margin-top": "40px"},
                 )
             ),
@@ -212,6 +213,25 @@ def app_layout(app) -> dbc.Container:
         style={"margin-left": "5%", "margin-right": "5%", "margin-top": "50px"},
         fluid=True,
     )
+
+
+def _update_plot_style(fig: Figure) -> Figure:
+    """Caution: This function changes the input object
+
+    :param fig:
+    :return:
+    """
+    fig.update_traces(
+        marker=dict(size=18, line=dict(width=2, color="black")),
+        opacity=0.5,
+        # font_family="Courier New"
+    )
+    fig.update_layout(legend_font_size=18)
+
+    axes_style = dict(title_font_size=24, title_text="", tickfont_size=18)
+    fig.update_xaxes(axes_style)
+    fig.update_yaxes(axes_style)
+    return fig
 
 
 def generate_callbacks(app):
@@ -253,9 +273,7 @@ def generate_callbacks(app):
             tsne_style, umap_style = False, True
 
         fig = px.scatter(
-            proj_results, x=0, y=1, color=df.species, labels={"color": "species"}
+            proj_results, x=0, y=1, color=df.species, labels={"color": "Species"}
         )
-        fig.update_traces(
-            marker=dict(size=18, line=dict(width=2, color="black")), opacity=0.5
-        )
-        return fig, tsne_style, umap_style
+
+        return _update_plot_style(fig), tsne_style, umap_style
