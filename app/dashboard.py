@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Dict, List, Union
 
+import dash
 import dash_bootstrap_components as dbc
 import pickle
 import plotly.express as px
@@ -28,17 +29,24 @@ with open(TSNE_RESULTS_FILEPATH, "rb") as f:
 
 
 def wrapper_slider(
-    available_values: Dict[Union[int, float], str],
+    available_values: List[Union[int, float]],
     default_value: Union[int, float],
     html_id: str,
 ) -> html.Div:
-    min_value, max_value = min(available_values.keys()), max(available_values.keys())
+    """ A wrapper around Dash Slider component that computes the min and max of available values for the slider.
+
+    :param available_values: A list of available values for the slider
+    :param default_value: Default setting shown in the slider
+    :param html_id: A unique HTML ID used for callback
+    :return: a HTML Div containing the Slider component
+    """
+    min_value, max_value = min(available_values), max(available_values)
     return html.Div(
         [
             dcc.Slider(
                 min=min_value,
                 max=max_value,
-                marks=available_values,
+                marks={i: str(i) for i in available_values},
                 value=default_value,
                 id=html_id,
                 step=None,
@@ -48,13 +56,12 @@ def wrapper_slider(
     )
 
 
-def generate_marks_for_sliders(
-    values: List[Union[int, float]]
-) -> Dict[Union[int, float], str]:
-    return {i: str(i) for i in values}
+def app_layout(app: dash.Dash) -> dbc.Container:
+    """ The main function to generate the layout of the interactive dashboard
 
-
-def app_layout(app) -> dbc.Container:
+    :param app:
+    :return:
+    """
     controls = html.Div(
         [
             # UMAP/t-SNE Selection
@@ -106,25 +113,19 @@ def app_layout(app) -> dbc.Container:
                         dbc.Label("Perplexity", className="param_headers"),
                         wrapper_slider(
                             default_value=min(TSNE_PARAMS["perplexity"]),
-                            available_values=generate_marks_for_sliders(
-                                TSNE_PARAMS["perplexity"]
-                            ),
+                            available_values=TSNE_PARAMS["perplexity"],
                             html_id="slider-perplexity",
                         ),
                         dbc.Label("Learning Rate", className="param_headers"),
                         wrapper_slider(
                             default_value=min(TSNE_PARAMS["learning_rates"]),
-                            available_values=generate_marks_for_sliders(
-                                TSNE_PARAMS["learning_rates"]
-                            ),
+                            available_values=TSNE_PARAMS["learning_rates"],
                             html_id="slider-learning-rate",
                         ),
                         dbc.Label("Number of Iterations", className="param_headers"),
                         wrapper_slider(
                             default_value=min(TSNE_PARAMS["n_iterations"]),
-                            available_values=generate_marks_for_sliders(
-                                TSNE_PARAMS["n_iterations"]
-                            ),
+                            available_values=TSNE_PARAMS["n_iterations"],
                             html_id="slider-num-iterations",
                         ),
                     ],
@@ -140,17 +141,13 @@ def app_layout(app) -> dbc.Container:
                         dbc.Label("Number of Neighbors", className="param_headers"),
                         wrapper_slider(
                             default_value=min(UMAP_PARAMS["n_neighbors"]),
-                            available_values=generate_marks_for_sliders(
-                                UMAP_PARAMS["n_neighbors"]
-                            ),
+                            available_values=UMAP_PARAMS["n_neighbors"],
                             html_id="slider-num-neighbors",
                         ),
                         dbc.Label("Minimum Distance", className="param_headers"),
                         wrapper_slider(
                             default_value=min(UMAP_PARAMS["min_dist"]),
-                            available_values=generate_marks_for_sliders(
-                                UMAP_PARAMS["min_dist"]
-                            ),
+                            available_values=UMAP_PARAMS["min_dist"],
                             html_id="slider-min-distance",
                         ),
                     ],
@@ -292,7 +289,9 @@ def app_layout(app) -> dbc.Container:
 
 
 def _update_plot_style(fig: Figure) -> Figure:
-    """Caution: This function changes the input object
+    """ A function to update the style of the Plotly Scatter plot
+
+    Caution: This function changes the input object
 
     :param fig:
     :return:
@@ -300,7 +299,6 @@ def _update_plot_style(fig: Figure) -> Figure:
     fig.update_traces(
         marker=dict(size=18, line=dict(width=2, color="black")),
         opacity=0.5,
-        # font_family="Courier New"
     )
     fig.update_layout(legend_font_size=18)
 
@@ -310,7 +308,12 @@ def _update_plot_style(fig: Figure) -> Figure:
     return fig
 
 
-def generate_callbacks(app):
+def generate_callbacks(app: dash.Dash) -> None:
+    """The main function to generate all necessary callbacks for the interactive dashboard
+
+    :param app:
+    :return:
+    """
     @app.callback(
         [
             Output("scatter-plot", "figure"),
