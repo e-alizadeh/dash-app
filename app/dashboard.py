@@ -168,7 +168,7 @@ def app_layout(app) -> dbc.Container:
                     children=[
                         html.Img(
                             src=app.get_asset_url("favicon.png"),
-                            style={"width": "30%"},
+                            style={"width": "25%", "margin-left": "5%"},
                         )
                     ],
                     **html_anchor_attrs,
