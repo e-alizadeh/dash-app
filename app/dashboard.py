@@ -11,7 +11,8 @@ from prepare_results import TSNE_PARAMS, UMAP_PARAMS
 DATA_DIR = Path(".")
 TSNE_RESULTS_FILEPATH = DATA_DIR.joinpath("tsne_projection_results.pkl")
 UMAP_RESULTS_FILEPATH = DATA_DIR.joinpath("umap_projection_results.pkl")
-SEED = 0
+
+_BADGE_COLOR = "#0000cd"
 
 html_anchor_attrs = dict(
     target="_blank",  # Open in a new tab/window
@@ -204,8 +205,17 @@ def app_layout(app) -> dbc.Container:
                                 ),
                                 html.A(
                                     dbc.Badge(
+                                        "Python",
+                                        color=_BADGE_COLOR,
+                                        className="me-1",
+                                    ),
+                                    href="https://www.python.org/",
+                                    **html_anchor_attrs,
+                                ),
+                                html.A(
+                                    dbc.Badge(
                                         "Dash by Plotly",
-                                        color="#dcdcdc",
+                                        color=_BADGE_COLOR,
                                         className="me-1",
                                     ),
                                     href="https://dash.plotly.com/",
@@ -213,20 +223,27 @@ def app_layout(app) -> dbc.Container:
                                 ),
                                 html.A(
                                     dbc.Badge(
-                                        "Plotly", color="#dcdcdc", className="me-1"
+                                        "Plotly", color=_BADGE_COLOR, className="me-1"
                                     ),
                                     href="https://plotly.com/",
                                     **html_anchor_attrs,
                                 ),
                                 html.A(
                                     dbc.Badge(
-                                        "Docker", color="#dcdcdc", className="me-1"
+                                        "Docker", color=_BADGE_COLOR, className="me-1"
                                     ),
                                     href="https://www.docker.com/",
                                     **html_anchor_attrs,
                                 ),
+                                html.A(
+                                    dbc.Badge(
+                                        "Heroku", color=_BADGE_COLOR, className="me-1"
+                                    ),
+                                    href="https://www.heroku.com/",
+                                    **html_anchor_attrs,
+                                ),
                                 dbc.Badge(
-                                    "Custom CSS", color="#dcdcdc", className="me-1"
+                                    "Custom CSS", color=_BADGE_COLOR, className="me-1"
                                 ),
                                 dbc.Button(
                                     "Go to source code",
