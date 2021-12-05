@@ -245,16 +245,20 @@ def app_layout(app) -> dbc.Container:
                                 dbc.Badge(
                                     "Custom CSS", color=_BADGE_COLOR, className="me-1"
                                 ),
-                                dbc.Button(
-                                    "Go to source code",
-                                    color="dark",
-                                    active=True,
-                                    style={
-                                        "float": "right",
-                                        "background-color": "#333333",
-                                        "margin-top": "-6px",
-                                    },
-                                ),
+                                html.A(
+                                    dbc.Button(
+                                        "Go to source code",
+                                        color="dark",
+                                        active=True,
+                                        style={
+                                            "float": "right",
+                                            "background-color": "#333333",
+                                            "margin-top": "-6px",
+                                        },
+                                    ),
+                                    href="https://github.com/e-alizadeh/dash-app",
+                                    **html_anchor_attrs,
+                                )
                             ]
                         ),
                         className="text_box",
@@ -268,7 +272,7 @@ def app_layout(app) -> dbc.Container:
                 [
                     dbc.Col(controls, md=3),
                     dbc.Col(
-                        dbc.Card(dcc.Graph(id="scatter-plot"), className="plot_box"),
+                        dbc.Card(dcc.Graph(id="scatter-plot", config={"displaylogo": False}), className="plot_box"),
                         md=8,
                     ),
                 ],
