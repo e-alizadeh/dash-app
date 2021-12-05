@@ -78,7 +78,7 @@ def app_layout(app: dash.Dash) -> dbc.Container:
                                 dbc.Button(
                                     "tSNE",
                                     id="tsne-button",
-                                    color="warning",
+                                    color="primary",
                                     outline=True,
                                     active=True,
                                     className="me-1",
@@ -89,7 +89,7 @@ def app_layout(app: dash.Dash) -> dbc.Container:
                                 dbc.Button(
                                     "UMAP",
                                     id="umap-button",
-                                    color="danger",
+                                    color="primary",
                                     outline=True,
                                     active=False,
                                     className="me-1",
