@@ -4,9 +4,7 @@ from typing import Dict, List, Union
 import dash_bootstrap_components as dbc
 import pickle
 import plotly.express as px
-from dash import dcc, html
-from dash.dependencies import Input, Output
-from enum import Enum
+from dash import Input, Output, callback_context, dcc, html
 from plotly.graph_objs import Figure  # Only used for type hint!
 from prepare_results import TSNE_PARAMS, UMAP_PARAMS
 
@@ -61,25 +59,41 @@ def app_layout(app) -> dbc.Container:
             # UMAP/t-SNE Selection
             dbc.Card(
                 [
-                    dbc.Label("Projection technique", className="card_title"),
-                    dcc.RadioItems(
-                        id="selected-method-radio-item",
-                        options=[
-                            {
-                                "label": " " + DimReductionMethods.UMAP.value,
-                                "value": DimReductionMethods.UMAP.value,
-                            },
-                            {
-                                "label": " " + DimReductionMethods.TSNE.value,
-                                "value": DimReductionMethods.TSNE.value,
-                            },
+                    dbc.Label(
+                        "Projection technique",
+                        className="card_title",
+                        style={"margin-left": "4%"},
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                dbc.Button(
+                                    "tSNE",
+                                    id="tsne-button",
+                                    color="warning",
+                                    outline=True,
+                                    active=True,
+                                    className="me-1",
+                                ),
+                                width=4,
+                            ),
+                            dbc.Col(
+                                dbc.Button(
+                                    "UMAP",
+                                    id="umap-button",
+                                    color="danger",
+                                    outline=True,
+                                    active=False,
+                                    className="me-1",
+                                ),
+                                width=4,
+                            ),
                         ],
-                        value=DimReductionMethods.TSNE.value,
-                        className="radio_item",
+                        justify="center",
                     ),
                 ],
                 className="control_box",
-                style={"margin-bottom": "10px", "padding-left": "4%"},
+                style={"margin-bottom": "20px"},
             ),
             # Dimensionality Reduction Configuration
             # ------
@@ -113,9 +127,8 @@ def app_layout(app) -> dbc.Container:
                             html_id="slider-num-iterations",
                         ),
                     ],
-                    style={"padding-left": "4%"},
+                    className="control_box params_box",
                 ),
-                className="control_box",
                 id="tsne-sliders",
             ),
             # UMAP config
@@ -140,9 +153,8 @@ def app_layout(app) -> dbc.Container:
                             html_id="slider-min-distance",
                         ),
                     ],
-                    style={"padding-left": "4%"},
+                    className="control_box params_box",
                 ),
-                className="control_box",
                 id="umap-sliders",
             ),
         ],
@@ -175,12 +187,13 @@ def app_layout(app) -> dbc.Container:
     return dbc.Container(
         [
             header,
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        [
-                            html.P(
-                                """
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.P(
+                                    """
                                     This page contains an interactive app using the ubiquitous Iris data.
                                     The main goal here was to deploy a containerized Dash app.
                                     The app uses two popular dimensionality reduction techniques, namely
@@ -188,18 +201,50 @@ def app_layout(app) -> dbc.Container:
                                     You can choose between different configurations for each technique. 
                                     Custom CSS style in Dash
                                 """
-                            ),
-                            dbc.Badge(
-                                "Dash by Plotly", color="#dcdcdc", className="mt-auto"
-                            ),
-                            dbc.Badge("Plotly", color="primary", className="mt-auto"),
-                            dbc.Badge("Docker", color="#dcdcdc", className="mt-auto"),
-                            dbc.Badge("Docker", color="#dcdcdc", className="mt-auto"),
-                        ]
+                                ),
+                                html.A(
+                                    dbc.Badge(
+                                        "Dash by Plotly",
+                                        color="#dcdcdc",
+                                        className="me-1",
+                                    ),
+                                    href="https://dash.plotly.com/",
+                                    **html_anchor_attrs,
+                                ),
+                                html.A(
+                                    dbc.Badge(
+                                        "Plotly", color="#dcdcdc", className="me-1"
+                                    ),
+                                    href="https://plotly.com/",
+                                    **html_anchor_attrs,
+                                ),
+                                html.A(
+                                    dbc.Badge(
+                                        "Docker", color="#dcdcdc", className="me-1"
+                                    ),
+                                    href="https://www.docker.com/",
+                                    **html_anchor_attrs,
+                                ),
+                                dbc.Badge(
+                                    "Custom CSS", color="#dcdcdc", className="me-1"
+                                ),
+                                dbc.Button(
+                                    "Go to source code",
+                                    color="dark",
+                                    active=True,
+                                    style={
+                                        "float": "right",
+                                        "background-color": "#333333",
+                                        "margin-top": "-6px",
+                                    },
+                                ),
+                            ]
+                        ),
+                        className="text_box",
                     ),
-                    className="text_box",
+                    width=8,
                 ),
-                width={"size": 6, "offset": 2},
+                justify="center",
             ),
             html.Hr(),
             dbc.Row(
@@ -220,7 +265,7 @@ def app_layout(app) -> dbc.Container:
                 )
             ),
         ],
-        style={"margin-left": "5%", "margin-right": "5%", "margin-top": "50px"},
+        style={"margin-top": "50px"},
         fluid=True,
     )
 
@@ -250,9 +295,13 @@ def generate_callbacks(app):
             Output("scatter-plot", "figure"),
             Output("tsne-sliders", component_property="hidden"),
             Output("umap-sliders", component_property="hidden"),
+            Output("tsne-button", "active"),
+            Output("umap-button", "active"),
         ],
         [
-            Input("selected-method-radio-item", "value"),
+            # Input("selected-method-radio-item", "value"),
+            Input("tsne-button", "n_clicks"),
+            Input("umap-button", "n_clicks"),
             Input("slider-perplexity", "value"),
             Input("slider-learning-rate", "value"),
             Input("slider-num-iterations", "value"),
@@ -261,29 +310,42 @@ def generate_callbacks(app):
         ],
     )
     def add_graph(
-        selected_method,
+        tsne_button,
+        umap_button,
         tsne_perplexity,
         tsne_learning_rate,
         tsne_num_iterations,
         umap_num_neighbors,
         umap_min_distance,
     ):
-        df = px.data.iris()
+        # Even thought tsne_button and umap_button input arguments are not explictly used in this function,
+        #   however, they should be present in order to trigger this callback whenever they are clicked,
+        #   and hence, they will be present in the callback_context as an element that was changed!
+        changed_id = [p["prop_id"] for p in callback_context.triggered][0]
 
-        if selected_method == DimReductionMethods.UMAP.value:
+        if "umap-button" in changed_id:
             proj_results = UMAP_PROJECTION_RESULTS[
                 f"n_comp=2__n_neigh={umap_num_neighbors}__min_dist={umap_min_distance:.1f}"
             ]["proj"]
-            tsne_style, umap_style = True, False
+            hide_tsne_params_box, hide_umap_params_box = True, False
+            tsne_button_active, umap_button_active = False, True
         else:
             # By default, it's t-SNE
             proj_results = TSNE_PROJECTION_RESULTS[
                 f"n_comp=2__perp={tsne_perplexity}__n_iter={tsne_num_iterations}__learning_rate={tsne_learning_rate}"
             ]["proj"]
-            tsne_style, umap_style = False, True
+            hide_tsne_params_box, hide_umap_params_box = False, True
+            tsne_button_active, umap_button_active = True, False
 
+        df = px.data.iris()
         fig = px.scatter(
             proj_results, x=0, y=1, color=df.species, labels={"color": "Species"}
         )
 
-        return _update_plot_style(fig), tsne_style, umap_style
+        return (
+            _update_plot_style(fig),
+            hide_tsne_params_box,
+            hide_umap_params_box,
+            tsne_button_active,
+            umap_button_active,
+        )

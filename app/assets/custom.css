@@ -24,8 +24,23 @@
 
 .control_box{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding-top: 5px;
+    padding-bottom: 15px;
+}
+
+.params_box{
+    padding-left: 4%;
+}
+
+.control_box.params_box{
 }
 
 .plot_box{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.go_to_source_button{
+    float: right;
+    background-color: #333333;
+
 }
