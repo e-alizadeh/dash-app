@@ -192,12 +192,11 @@ def app_layout(app: dash.Dash) -> dbc.Container:
                             [
                                 html.P(
                                     """
-                                    This page contains an interactive app using the ubiquitous Iris data.
-                                    The main goal here was to deploy a containerized Dash app.
-                                    The app uses two popular dimensionality reduction techniques, namely
-                                    t-SNE and UMAP to project higher dimensional data into a 2D plane. 
-                                    You can choose between different configurations for each technique. 
-                                    Custom CSS style in Dash
+                                    This page contains an interactive app that uses t-SNE and UMAP dimensionality 
+                                    reduction methods to project the ubiquitous Iris data onto a 2D plane.
+                                    The goal here is to have a containerized interactive dashboard app integrated to
+                                    my website.                                     This is a PoC. 
+                                    The following technologies are used in this side project!
                                 """
                                 ),
                                 html.A(
