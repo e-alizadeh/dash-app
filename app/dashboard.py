@@ -276,10 +276,11 @@ def app_layout(app: dash.Dash) -> dbc.Container:
             ),
             dbc.Row(
                 dbc.Col(
-                    dbc.Label("© 2021 Esmaeil Alizadeh", style={"font-weight": "bold"}),
-                    width={"size": 4, "offset": 5},
-                    style={"margin-top": "40px"},
-                )
+                    dbc.Label("© 2021 Esmaeil Alizadeh - All Rights Reserved", style={"font-weight": "bold"}),
+                    width=4,
+                ),
+                justify="center",
+                style={"margin-top": "50px"},
             ),
         ],
         style={"margin-top": "50px"},
