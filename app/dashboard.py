@@ -15,11 +15,10 @@ TSNE_RESULTS_FILEPATH = DATA_DIR.joinpath("tsne_projection_results.pkl")
 UMAP_RESULTS_FILEPATH = DATA_DIR.joinpath("umap_projection_results.pkl")
 SEED = 0
 
-
-class DimReductionMethods(Enum):
-    UMAP = "UMAP"
-    TSNE = "t-SNE"
-
+html_anchor_attrs = dict(
+    target="_blank",  # Open in a new tab/window
+    rel="noreferrer noopener",  # Prevent malicious attacks
+)
 
 with open(UMAP_RESULTS_FILEPATH, "rb") as f:
     UMAP_PROJECTION_RESULTS = pickle.load(f)
@@ -159,6 +158,7 @@ def app_layout(app) -> dbc.Container:
                             style={"width": "30%"},
                         )
                     ],
+                    **html_anchor_attrs,
                 ),
                 width=3,
                 align="left",
